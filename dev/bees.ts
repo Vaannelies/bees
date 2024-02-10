@@ -131,10 +131,9 @@ class Bee {
           if(this.y == 0) {
             this.setNewDestination()
           }
-        } else {
-          this.setNewDestination()
+          return
         }
-        console.log("flyinggg yeeeaa")
+        this.setNewDestination()
         return;
       }
       
@@ -160,20 +159,11 @@ class Bee {
     checkFlowers() {
       this.game.flowers.forEach(flower => {
         // if bee is near flower and flower not occupied, go to flower, get nectar
-
-        // console.log("width: ", flower.getFlowerEl().getBoundingClientRect().width)
         if(this.x + this.flowerDistancePixels > flower.getX() && this.x + this.flowerDistancePixels < flower.getX() + flower.getFlowerEl().getBoundingClientRect().width ) {
-          // width is correct.
-          // now check height.
           if(this.y + this.flowerDistancePixels > flower.getY() && this.y + this.flowerDistancePixels < flower.getY() + flower.getFlowerEl().getBoundingClientRect().height ) {
-            console.log("flower nearby!")
             if(!flower.getIsOccupied() && !this.isHoldingPollen) {
               this.pollinate(flower);
             }
-          }
-
-          if(flower.getIsOccupied()) {
-            console.log("occupied!")
           }
         }
       })
@@ -249,14 +239,15 @@ class Game {
     this.hive = new Hive()
     this.score = 0;
 
-    for(let i = 0; i < 100; i++) {
+    for(let i = 0; i < 70; i++) {
       const flowerAreaY = 200 + (Math.random() * (window.innerHeight - 200))
       const flowerAreaX = Math.random() * (window.innerWidth)
       this.flowers.push(new Flower(flowerAreaX, flowerAreaY))
     }
     
-    for(let i = 0; i < 10; i++) {
-      this.bees.push(new Bee(Math.random() * (window.innerWidth),0))
+    for(let i = 0; i < 30; i++) {
+      // this.bees.push(new Bee(Math.random() * (window.innerWidth),0))
+      this.bees.push(new Bee(0,0))
     }    
 
     this.scoreEl = document.createElement("div")
@@ -273,7 +264,6 @@ class Game {
 
   update() {
     this.bees.forEach(bee => {
-      // bee.destination = {x: 200, y: 200}
       bee.update()
     })
   }
@@ -293,7 +283,4 @@ class Game {
 }
 
 const game = Game.getInstance();
-// game.update()
-
-console.log("hoi")
 
