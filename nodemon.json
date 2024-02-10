@@ -1,0 +1,4 @@
+{
+    "ext": "*ts, html",
+    "exec": "tsc && ts-node dev/bees.ts"
+}

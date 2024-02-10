@@ -1,0 +1,5 @@
+/node_modules
+settings.json
+*.lock
+*.js
+*.js.map

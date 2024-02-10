@@ -1,0 +1,116 @@
+
+  body {
+    margin: 0;
+  }
+
+  .hive {
+    width: 100vw;
+    height: 120px;
+    background: yellow;
+    display: block;
+  }
+
+  .flower {
+    position: absolute;
+    width: 30px;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .flower-top {
+      width: 100%;
+      height: 50px;
+      border-radius: 100%;
+      background: rgb(255, 78, 223);
+    }
+    .flower-stem {
+      width: 5px;
+      height: 100%;
+      background: rgb(95, 170, 95);
+      transform: translateY(-1px);
+      z-index: -1;
+      
+    
+    }
+  }
+
+  .bee {
+      width: 20px;
+      height: 10px;
+      background: goldenrod;
+      position: absolute;
+      border-radius: 30px;
+      top: 0;
+      left: 0;
+      z-index: 2;
+
+      &.--mirrored {
+        transform: scaleX(-100%);
+      }
+  }
+
+  .bee-wing {
+    display: block;
+    position: absolute;
+    border-radius: 30px;
+    background: white;
+    top: -100%;
+    left: 4px;
+    width: 6px;
+    height: 10px;
+    border: 1px solid black;
+    rotate: -50deg;
+    &:not(:first-of-type) {
+      left: 8px;
+      rotate: 30deg;
+    }
+  }
+
+  .bee-head {
+    position: relative;
+    display: block;
+    width: 6px;
+    height: 10px;
+    border-radius: 30px 0 0 30px;
+    background: black;
+  }
+
+  .bee-antenna {
+    position: absolute;
+    display: block;
+    top: -5px;
+    left: 0px;
+    height: 7px;
+    width: 1px;
+    background: black;
+    rotate: -20deg;
+    &:not(:first-of-type) {
+      left: -3px;
+      top: -2px;
+      rotate: -50deg;
+    }
+  }
+  .pollen {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 100%;
+    background: orange;
+    &.--invisible {
+        visibility: hidden;
+    }
+  }
+
+  .score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: orange;
+    font-weight: 700;
+    font-size: 21px;
+  }
