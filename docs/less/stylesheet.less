@@ -23,6 +23,21 @@
       height: 50px;
       border-radius: 100%;
       background: rgb(255, 78, 223);
+      &.--red {
+        background: rgb(255, 0, 76);
+      }
+      &.--pink {
+        background: rgb(255, 192, 227);
+      }
+      &.--blue {
+        background: rgb(0, 140, 255);
+      }
+      &.--orange {
+        background: rgb(255, 131, 36);
+      }
+      &.--purple {
+        background: rgb(189, 119, 255);
+      }
     }
     .flower-stem {
       width: 5px;
@@ -91,6 +106,42 @@
       rotate: -50deg;
     }
   }
+
+  .bee-speech {
+    display: block;
+    position: absolute;
+    top: -300%;
+    left: -400%;
+    width: 20px;
+    height: 15px;
+    background: white;
+    border: 1px solid black;
+
+    &.--invisible {
+      visibility: hidden;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 104%;
+      left: 40%;
+      border: 9px solid transparent;
+      border-top-color: black;
+      border-right: 0;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 40%;
+      border: 8px solid transparent;
+      border-top-color: white;
+      border-right: 0;
+    }
+  }
+
   .pollen {
     display: block;
     position: absolute;
