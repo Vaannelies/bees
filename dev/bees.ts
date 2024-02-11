@@ -1,11 +1,46 @@
 console.log("bees.")
 
 class Hive {
+  private x: number = 0;
+  private y: number = 0;
+  private el: HTMLElement
+  private doorEl: HTMLElement
   constructor() {
-    const hive = document.createElement("div")
-    hive.className = "hive"
+    this.el = document.createElement("div")
+    this.el.className = "hive"
+
+    this.doorEl = document.createElement("span")
+    this.doorEl.className = "hive-door"
+
+    this.el.appendChild(this.doorEl)
+    this.el.setAttribute('style', 'top: ' + this.y + 'px; left: ' + this.x + 'px')
+
     const body = document.querySelector("body")
-    body?.appendChild(hive)
+    body?.appendChild(this.el)
+  }
+
+  public getX() {
+    return this.x;
+  }
+
+  public getY() {
+    return this.y;
+  }
+
+  public getEl() {
+    return this.el;
+  }
+
+  public getWidth() {
+    return this.el.getBoundingClientRect().width
+  }
+
+  public getHeight() {
+    return this.el.getBoundingClientRect().height
+  }
+
+  public getDoorCoordinates() {
+    return {x: this.getWidth() / 2, y: this.getHeight()}
   }
 }
 
@@ -82,9 +117,16 @@ class Bee {
     beeDistancePixels: number = 30
     private speechBubbleEl: HTMLElement
     private isCommunicating: boolean = false;
+    private isInsideHive: boolean = true;
+    private isAtHiveDoor: boolean = false;
 
     constructor(startX: number, startY: number, index: number) {
-        this.setNewDestination()
+        this.game = Game.getInstance()
+        if(this.isInsideHive) {
+          this.goToHiveDoor()
+        } else {
+          this.setNewDestination()
+        }
         this.x = startX;
         this.y = startY
         this.index = index;
@@ -129,27 +171,49 @@ class Bee {
         this.el.append(torso)
         this.el.append(head)
         body?.appendChild(this.el)
-
-        this.game = Game.getInstance()
     }
     
     update() {
       this.fly()
       this.checkFlowers()
       this.checkFellowBees()
+      this.checkInsideHive()
+      this.checkAtHiveDoor()
     }
 
     fly() {
       if(this.y == this.destination.y && this.x == this.destination.x) {
         if(this.isHoldingPollen) {
-          console.log("pollen")
-          this.togglePollen()
-          if(this.y == 0) {
-            this.setNewDestination()
+          if(this.isAtHiveDoor) {
+            // bee is outside at the door with pollen, bring pollen to the upper wall of the hive
+            this.setNewDestination(this.game.hive.getX() + Math.round(Math.random() * this.game.hive.getWidth()), 0)
+          } else if(this.y == 0) {
+          // if bee touch wall of the hive, lose pollen, go outside again
+
+            this.togglePollen()
+            this.goToHiveDoor()
+          
+          } else {
+            // bee is outside with pollen, bring pollen to the hive door!
+            this.goToHiveDoor()
           }
-          return
+        } else {
+          // bee is not holding pollen
+          if (this.isInsideHive) {
+            if(this.isAtHiveDoor) {
+              // bee is inside at the door and wants to leave.
+              this.setNewDestination(null, this.game.hive.getHeight() + Math.round(Math.random() * window.innerHeight - this.game.hive.getHeight()))
+
+            } else {
+              // bee is inside without pollen, go to door.
+              this.goToHiveDoor()
+            }
+          } else {
+            // bee is outside, set new random destination
+            this.setNewDestination(null, this.game.hive.getHeight() + Math.round(Math.random() * window.innerHeight - this.game.hive.getHeight()))
+          }
         }
-        this.setNewDestination()
+  
         return;
       }
       
@@ -209,7 +273,7 @@ class Bee {
                 (this.y - this.flowerDistancePixels > flower.getY() && this.y - this.flowerDistancePixels < flower.getY() + flower.getFlowerEl().getBoundingClientRect().height)
               // this.y + this.beeDistancePixels > bee.getY() && this.y + this.beeDistancePixels < bee.getY() + bee.getEl().getBoundingClientRect().height 
             ) {
-            if(!flower.getIsOccupied() && !this.isHoldingPollen) {
+            if(!flower.getIsOccupied() && !this.isHoldingPollen && !this.isPollinating) {
               this.pollinate(flower);
             }
           }
@@ -273,6 +337,30 @@ class Bee {
       });
     }
 
+    checkAtHiveDoor() {
+      console.log("inside hive", this.isInsideHive)
+      if(this.isInsideHive) {
+        this.isAtHiveDoor = this.x == this.game.hive.getDoorCoordinates().x && this.y == this.game.hive.getDoorCoordinates().y - 20
+      } else {
+        this.isAtHiveDoor = this.x == this.game.hive.getDoorCoordinates().x && this.y == this.game.hive.getDoorCoordinates().y
+      }
+    }
+
+    checkInsideHive() {
+      if(
+        (this.x > this.game.hive.getX() && this.x < this.game.hive.getX() + this.game.hive.getWidth()) 
+        &&
+        // (this.y > this.game.hive.getY() && this.y < this.game.hive.getY() + this.game.hive.getHeight()) 
+        (this.y < this.game.hive.getHeight()) // assuming that hive is always at top: 0
+      ) {
+        this.isInsideHive = true
+        this.el.style.background = "green"
+      } else {
+        this.isInsideHive = false
+        this.el.style.background = "red"
+      }
+    }
+
     setNewDestination(x: number = null, y: number = null) {
       this.destination.x = x !== null ? x : Math.round(Math.random() * window.innerWidth);
       this.destination.y = y !== null ? y : Math.round(Math.random() * window.innerHeight);
@@ -285,7 +373,7 @@ class Bee {
       flower.setIsOccupied(true)
       setTimeout(() => {
         this.togglePollen()
-        this.setNewDestination(null, 0)
+        this.goToHiveDoor();
         flower.setIsOccupied(false)
         this.isPollinating = false;
       }, 2000);
@@ -298,12 +386,22 @@ class Bee {
           this.el.querySelector('.pollen').classList.remove('--invisible')
         }
       } else {
+        this.spawnPollen()
+
         this.isHoldingPollen = false;
         if(this.el.querySelector('.pollen')) {
           this.el.querySelector('.pollen').classList.add('--invisible')
         }
         this.game.increaseScore()
       }
+    }
+
+    spawnPollen() {
+      const pollenEl = document.createElement('span')
+      pollenEl.className = "pollen"
+      pollenEl.setAttribute('style', `top: ${this.y}px; left: ${this.x}px; position: absolute`)
+      const body = document.querySelector('body')
+      body.appendChild(pollenEl)
     }
 
     showSpeechBubble(text: string) {
@@ -315,6 +413,14 @@ class Bee {
     hideSpeechBubble() {
       this.isCommunicating = false;
       this.speechBubbleEl.classList.add('--invisible')
+    }
+
+    goToHiveDoor() {
+      if(this.isInsideHive) {
+        this.setNewDestination(this.game.hive.getDoorCoordinates().x, this.game.hive.getDoorCoordinates().y - 20)
+      } else {
+        this.setNewDestination(this.game.hive.getDoorCoordinates().x, this.game.hive.getDoorCoordinates().y)
+      }
     }
 
     dance() {

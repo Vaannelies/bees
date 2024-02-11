@@ -4,10 +4,33 @@
   }
 
   .hive {
+    position: absolute;
     width: 100vw;
     height: 120px;
-    background: yellow;
+    background: linear-gradient(to top, #ffa6004f,#ffe51f16, #ffe51f00, #ffe51f00, #ffe51f16);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 100;
+
+    &::before {
+      background: yellow;
+    }
+
+    &::after {
+      background: yellow;
+    }
+  }
+
+  .hive-door {
     display: block;
+    width: 80px;
+    height: 30px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    // background: rgba(0, 0, 0, 0.457);
+    // mask: s;
+    background: linear-gradient(to bottom, rgb(89, 62, 20), #00000000);
   }
 
   .flower {
