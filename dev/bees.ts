@@ -354,10 +354,10 @@ class Bee {
         (this.y < this.game.hive.getHeight()) // assuming that hive is always at top: 0
       ) {
         this.isInsideHive = true
-        this.el.style.background = "green"
+        this.el.style.background = "#8f6c14"
       } else {
         this.isInsideHive = false
-        this.el.style.background = "red"
+        this.el.style.background = "goldenrod"
       }
     }
 
