@@ -6,3 +6,5 @@ A **TypeScript** based "bee-simulator" that shows you some hard-working bees.
 * They bring back pollen to the hive.
 
 Enjoy the show. :)
+
+![afbeelding](https://github.com/Vaannelies/bees/assets/43701941/a8245898-4b19-4a28-b0a1-85fc43a5cde4)
