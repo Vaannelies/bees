@@ -338,7 +338,6 @@ class Bee {
     }
 
     checkAtHiveDoor() {
-      console.log("inside hive", this.isInsideHive)
       if(this.isInsideHive) {
         this.isAtHiveDoor = this.x == this.game.hive.getDoorCoordinates().x && this.y == this.game.hive.getDoorCoordinates().y - 20
       } else {
@@ -458,7 +457,7 @@ class Game {
     this.score = 0;
 
     for(let i = 0; i < 30; i++) {
-      const flowerAreaY = 200 + (Math.random() * (window.innerHeight - 200))
+      const flowerAreaY = 100 + this.hive.getHeight() + (Math.random() * (window.innerHeight - (100 + this.hive.getHeight())))
       const flowerAreaX = Math.random() * (window.innerWidth)
       this.flowers.push(new Flower(flowerAreaX, flowerAreaY, Math.round(Math.random() * 5)))
     }

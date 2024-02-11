@@ -4,6 +4,7 @@
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
     text-align: center;
+    background: rgb(246, 255, 241);
   }
 
   .hive {
@@ -11,10 +12,15 @@
     width: 100vw;
     height: 120px;
     background: linear-gradient(to top, #ffa6004f,#ffe51f16, #ffe51f00, #ffe51f00, #ffe51f16);
+    background-color: white;
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    z-index: 100;
+
+    &:not(:first-of-type) {
+      background: linear-gradient(to top, #ffa6004f,#ffe51f16, #ffe51f00, #ffe51f00, #ffe51f16);
+      z-index: 100;
+    }
 
     &::before {
       background: yellow;
@@ -31,8 +37,6 @@
     height: 30px;
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
-    // background: rgba(0, 0, 0, 0.457);
-    // mask: s;
     background: linear-gradient(to bottom, rgb(89, 62, 20), #00000000);
   }
 
