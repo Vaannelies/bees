@@ -40,7 +40,7 @@ class Hive {
   }
 
   public getDoorCoordinates() {
-    return {x: this.getWidth() / 2, y: this.getHeight()}
+    return {x: Math.round(this.getWidth() / 2), y: Math.round(this.getHeight())}
   }
 }
 
@@ -109,6 +109,7 @@ class Bee {
     private y: number;
     destination: {x: number, y: number} = {x: 0, y: 0}
     private el: HTMLElement;
+    private speed: number = 1;
     // receivedInstructions: {x: number, y: number};
     isPollinating: boolean;
     isHoldingPollen: boolean;
@@ -218,17 +219,17 @@ class Bee {
       }
       
       if(this.x < this.destination.x) {
-          this.x++
+          this.x += this.speed
           this.el.classList.add('--mirrored')
       } else if(this.x > this.destination.x) {
           this.el.classList.remove('--mirrored')
-          this.x--
+          this.x -= this.speed
       }
 
       if(this.y < this.destination.y) {
-          this.y++
+          this.y += this.speed
       } else if(this.y > this.destination.y) {
-          this.y--
+          this.y -= this.speed
       }
 
       if(this.el) {
@@ -316,7 +317,7 @@ class Bee {
               (this.y - this.beeDistancePixels > bee.getY() && this.y - this.beeDistancePixels < bee.getY() + bee.getEl().getBoundingClientRect().height)
           ) {
             
-            // normal meeting, outside
+            // normal meeting, anywhere
             if(Math.round(Math.random() * 300) == 1 && !this.isCommunicating && !this.isPollinating) {
               // greet other bee!
               this.showSpeechBubble(":)")
@@ -325,6 +326,19 @@ class Bee {
                 this.hideSpeechBubble()
                 bee.hideSpeechBubble()
               }, 1000)
+            }
+
+            // meeting, inside hive
+            if(this.isInsideHive && this.isHoldingPollen) {
+              if(Math.round(Math.random() * 300) == 1 && !this.isCommunicating && !this.isPollinating) {
+                // discuss progress
+                this.showSpeechBubble("💸")
+                bee.showSpeechBubble("💪")
+                setTimeout(() => {
+                  this.hideSpeechBubble()
+                  bee.hideSpeechBubble()
+                }, 1000)
+              }
             }
 
             if(this.isHoldingPollen) {
@@ -463,8 +477,8 @@ class Game {
     }
     
     for(let i = 0; i < 10; i++) {
-      // this.bees.push(new Bee(Math.random() * (window.innerWidth),0))
-      this.bees.push(new Bee(0,0, i))
+      this.bees.push(new Bee(Math.round(Math.random() * (window.innerWidth)),0, i))
+      // this.bees.push(new Bee(0,0, i))
     }    
 
     this.scoreEl = document.createElement("div")
