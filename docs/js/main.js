@@ -28,7 +28,7 @@ class Hive {
         return this.el.getBoundingClientRect().height;
     }
     getDoorCoordinates() {
-        return { x: this.getWidth() / 2, y: this.getHeight() };
+        return { x: Math.round(this.getWidth() / 2), y: Math.round(this.getHeight()) };
     }
 }
 class Flower {
@@ -73,6 +73,7 @@ class Flower {
 class Bee {
     constructor(startX, startY, index) {
         this.destination = { x: 0, y: 0 };
+        this.speed = 1;
         this.flowerDistancePixels = 30;
         this.beeDistancePixels = 30;
         this.isCommunicating = false;
@@ -154,18 +155,18 @@ class Bee {
             return;
         }
         if (this.x < this.destination.x) {
-            this.x++;
+            this.x += this.speed;
             this.el.classList.add('--mirrored');
         }
         else if (this.x > this.destination.x) {
             this.el.classList.remove('--mirrored');
-            this.x--;
+            this.x -= this.speed;
         }
         if (this.y < this.destination.y) {
-            this.y++;
+            this.y += this.speed;
         }
         else if (this.y > this.destination.y) {
-            this.y--;
+            this.y -= this.speed;
         }
         if (this.el) {
             this.el.setAttribute('style', 'top: ' + this.y + 'px; left: ' + this.x + 'px;');
@@ -209,6 +210,16 @@ class Bee {
                             this.hideSpeechBubble();
                             bee.hideSpeechBubble();
                         }, 1000);
+                    }
+                    if (this.isInsideHive && this.isHoldingPollen) {
+                        if (Math.round(Math.random() * 300) == 1 && !this.isCommunicating && !this.isPollinating) {
+                            this.showSpeechBubble("💸");
+                            bee.showSpeechBubble("💪");
+                            setTimeout(() => {
+                                this.hideSpeechBubble();
+                                bee.hideSpeechBubble();
+                            }, 1000);
+                        }
                     }
                     if (this.isHoldingPollen) {
                     }
@@ -320,7 +331,7 @@ class Game {
             this.flowers.push(new Flower(flowerAreaX, flowerAreaY, Math.round(Math.random() * 5)));
         }
         for (let i = 0; i < 10; i++) {
-            this.bees.push(new Bee(0, 0, i));
+            this.bees.push(new Bee(Math.round(Math.random() * (window.innerWidth)), 0, i));
         }
         this.scoreEl = document.createElement("div");
         this.scoreEl.className = "score";
